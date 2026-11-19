@@ -1,0 +1,259 @@
+ 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Quiz</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .option {
+            display: block;
+            padding: 12px;
+            margin: 10px 0;
+            background: #f2f2f2;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #198754;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: gray;
+            cursor: not-allowed;
+        }
+
+        #result {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>JavaScript Quiz</h2>
+
+    <div id="quiz">
+
+        <p id="questionNo"></p>
+
+        <h3 id="question"></h3>
+
+        <div id="options"></div>
+
+        <br>
+
+        <button id="next" onclick="nextQuestion()" disabled>
+            Next
+        </button>
+
+    </div>
+
+    <div id="result" style="display:none;">
+
+        <h2>JavaScript Quiz</h2>
+
+        <h1 id="score"></h1>
+
+        <p id="message"></p>
+
+        <button onclick="restartQuiz()">Restart Quiz</button>
+
+    </div>
+
+</div>
+
+<script>
+
+    // Questions array
+    let questions = [
+
+        {
+            question: "Which keyword declares a constant variable?",
+            options: ["var", "let", "const", "static"],
+            answer: 2
+        },
+
+        {
+            question: "Which language is used for web development?",
+            options: ["HTML", "JavaScript", "CSS", "All of these"],
+            answer: 3
+        },
+
+        {
+            question: "Which symbol is used for comments in JavaScript?",
+            options: ["//", "##", "<!--", "**"],
+            answer: 0
+        },
+
+        {
+            question: "Which method selects an element by ID?",
+            options: [
+                "getElementById()",
+                "getElementsByClass()",
+                "queryAll()",
+                "getTag()"
+            ],
+            answer: 0
+        }
+
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    // Display question
+    function showQuestion() {
+
+        let q = questions[currentQuestion];
+
+        document.getElementById("questionNo").innerText =
+            "Question " + (currentQuestion + 1) +
+            " of " + questions.length;
+
+        document.getElementById("question").innerText =
+            q.question;
+
+        let optionsHTML = "";
+
+        q.options.forEach((option, index) => {
+
+            optionsHTML += `
+                <label class="option">
+                    <input type="radio"
+                    name="answer"
+                    value="${index}"
+                    onchange="enableNext()">
+
+                    ${option}
+                </label>
+            `;
+
+        });
+
+        document.getElementById("options").innerHTML =
+            optionsHTML;
+
+        let nextButton = document.getElementById("next");
+
+        nextButton.disabled = true;
+
+        if (currentQuestion === questions.length - 1) {
+            nextButton.innerText = "Finish";
+        } else {
+            nextButton.innerText = "Next";
+        }
+    }
+
+    // Enable next button
+    function enableNext() {
+
+        document.getElementById("next").disabled = false;
+
+    }
+
+    // Check answer and move forward
+    function nextQuestion() {
+
+        let selected = document.querySelector(
+            'input[name="answer"]:checked'
+        );
+
+        if (selected === null) {
+            return;
+        }
+
+        if (Number(selected.value) ===
+            questions[currentQuestion].answer) {
+
+            score++;
+
+        }
+
+        currentQuestion++;
+
+        if (currentQuestion < questions.length) {
+
+            showQuestion();
+
+        } else {
+
+            showResult();
+
+        }
+    }
+
+    // Display final result
+    function showResult() {
+
+        document.getElementById("quiz").style.display = "none";
+
+        document.getElementById("result").style.display = "block";
+
+        let percentage = (score / questions.length) * 100;
+
+        document.getElementById("score").innerText =
+            score + " / " + questions.length;
+
+        let message = "";
+
+        if (percentage === 100) {
+            message = "Excellent work!";
+        }
+        else if (percentage >= 50) {
+            message = "Good job!";
+        }
+        else {
+            message = "Keep practising!";
+        }
+
+        document.getElementById("message").innerText =
+            "You scored " + percentage + "%. " + message;
+
+    }
+
+    // Restart quiz
+    function restartQuiz() {
+
+        currentQuestion = 0;
+        score = 0;
+
+        document.getElementById("quiz").style.display = "block";
+
+        document.getElementById("result").style.display = "none";
+
+        showQuestion();
+
+    }
+
+    // Start quiz
+    showQuestion();
+
+</script>
+
+</body>
+</html>
